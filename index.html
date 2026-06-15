@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SentiShield - Fake Social Account & Bot Detection Hub</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Chart.js for visualization charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <!-- ==================== LOGIN / REGISTRATION SCREEN (MODULE 1) ==================== -->
+    <div id="authScreen" class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i data-lucide="shield-alert"></i>
+                </div>
+                <h1>SentiShield AI</h1>
+                <p>Fake Social Account Detection Panel</p>
+            </div>
+            
+            <!-- Login Form -->
+            <div id="loginSection">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label" for="loginUser">Username</label>
+                        <input type="text" id="loginUser" class="form-input" required placeholder="Enter username (e.g. admin)">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="loginPass">Password</label>
+                        <input type="password" id="loginPass" class="form-input" required placeholder="Enter password (e.g. admin123)">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                        <i data-lucide="log-in"></i> Authenticate
+                    </button>
+                </form>
+                <p style="text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 20px;">
+                    Don't have an account? <a href="#" id="showRegister" style="color: var(--secondary); text-decoration: none; font-weight: 600;">Sign up</a>
+                </p>
+                <div style="background: rgba(255,255,255,0.02); border: 1px dashed var(--border-color); border-radius: var(--radius-sm); padding: 12px; margin-top: 24px; font-size: 11px; color: var(--text-muted); text-align: center;">
+                    <strong>Demo Logins:</strong> admin / admin123 (Admin) or researcher / research123 (User)
+                </div>
+            </div>
+
+            <!-- Registration Form -->
+            <div id="registerSection" style="display: none;">
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label class="form-label" for="regName">Full Name</label>
+                        <input type="text" id="regName" class="form-input" required placeholder="Your full name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="regUser">Username</label>
+                        <input type="text" id="regUser" class="form-input" required placeholder="Choose a username">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="regPass">Password</label>
+                        <input type="password" id="regPass" class="form-input" required placeholder="Choose a password">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                        <i data-lucide="user-plus"></i> Register Account
+                    </button>
+                </form>
+                <p style="text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 20px;">
+                    Already have an account? <a href="#" id="showLogin" style="color: var(--secondary); text-decoration: none; font-weight: 600;">Log in</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MAIN DASHBOARD WORKSPACE ==================== -->
+    <div id="mainScreen" class="app-container" style="display: none;">
+        
+        <!-- SIDEBAR NAVIGATION PANEL (MODULE 10 & 13) -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <i data-lucide="shield-alert"></i>
+                <span>SentiShield Hub</span>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li class="sidebar-item active">
+                    <a href="#" data-view="dashboard">
+                        <i data-lucide="layout-dashboard"></i> Dashboard
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" data-view="profiler">
+                        <i data-lucide="user-check"></i> Account Profiler
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" data-view="ml">
+                        <i data-lucide="cpu"></i> ML Arena
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" data-view="network">
+                        <i data-lucide="git-merge"></i> Network Graph
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" data-view="database">
+                        <i data-lucide="database"></i> DB Browser
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" data-view="security">
+                        <i data-lucide="lock"></i> Security Panel
+                    </a>
+                </li>
+                <li class="sidebar-item admin-only">
+                    <a href="#" data-view="admin">
+                        <i data-lucide="sliders"></i> Admin Settings
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Current User profile item -->
+            <div class="sidebar-user">
+                <div class="user-avatar">A</div>
+                <div class="user-info">
+                    <div class="user-name">Loading...</div>
+                    <div class="user-role">Guest</div>
+                </div>
+                <button class="logout-btn logout-trigger" title="Log Out">
+                    <i data-lucide="log-out"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN WINDOW CONTAINER -->
+        <main class="main-content">
+            
+            <!-- Page Header -->
+            <header class="app-header">
+                <div class="page-title">
+                    <h2 id="currentViewTitle">Control Dashboard</h2>
+                </div>
+                <div class="header-actions">
+                    <span class="status-badge real" style="font-size: 11px;">
+                        <i data-lucide="shield"></i> SSL SECURE
+                    </span>
+                    <button class="btn btn-secondary btn-sm logout-trigger">
+                        <i data-lucide="log-out"></i> Logout
+                    </button>
+                </div>
+            </header>
+
+            <!-- ==================== VIEW 1: DASHBOARD (MODULE 11) ==================== -->
+            <div id="view-dashboard" class="view-panel view-container">
+                <div class="dashboard-grid">
+                    
+                    <div class="card stat-card">
+                        <div class="stat-info">
+                            <h3>Total Profiles Scanned</h3>
+                            <div class="stat-value" id="stat_totalScans">0</div>
+                            <div class="stat-change up"><i data-lucide="arrow-up-right"></i> Live database sync</div>
+                        </div>
+                        <div class="stat-icon primary">
+                            <i data-lucide="activity"></i>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-info">
+                            <h3>Fake Accounts Ratio</h3>
+                            <div class="stat-value" id="stat_fakeRatio">0%</div>
+                            <div class="stat-change down"><i data-lucide="arrow-down-right"></i> Filter rate active</div>
+                        </div>
+                        <div class="stat-icon danger">
+                            <i data-lucide="alert-triangle"></i>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-info">
+                            <h3>Database Records</h3>
+                            <div class="stat-value" id="stat_dbRecords">0</div>
+                            <div class="stat-change up"><i data-lucide="check"></i> LocalStorage active</div>
+                        </div>
+                        <div class="stat-icon success">
+                            <i data-lucide="database"></i>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-info">
+                            <h3>Active ML Model</h3>
+                            <div class="stat-value" id="stat_currentModel" style="font-size: 20px; margin-top: 18px;">Naive Bayes</div>
+                            <div class="stat-change"><i data-lucide="cpu"></i> Trained parameters</div>
+                        </div>
+                        <div class="stat-icon warning">
+                            <i data-lucide="cpu"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-row">
+                    <div class="card">
+                        <div class="card-title">
+                            <span><i data-lucide="trending-up"></i> Detection Activity Trends</span>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="scanHistoryChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">
+                            <span><i data-lucide="pie-chart"></i> Risk Factor Distribution</span>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="riskDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW 2: ACCOUNT PROFILER (MODULE 2, 3, 4, 5, 6, 9) ==================== -->
+            <div id="view-profiler" class="view-panel view-container" style="display: none;">
+                <div class="profiler-grid">
+                    
+                    <!-- LEFT COLUMN: Profile Data Collector form -->
+                    <div class="card">
+                        <div class="card-title">
+                            <span><i data-lucide="user-plus"></i> Profile Data Feed</span>
+                        </div>
+                        
+                        <!-- Profile Preset Selector -->
+                        <div class="form-group" style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                            <label class="form-label">Pre-loaded Datasets</label>
+                            <div style="display: flex; gap: 8px;">
+                                <select id="profilePreset" class="form-input" style="flex-grow: 1;">
+                                    <!-- Populated dynamically -->
+                                </select>
+                                <button type="button" id="presetSelectBtn" class="btn btn-secondary btn-sm">Load</button>
+                            </div>
+                        </div>
+
+                        <form id="profilerForm">
+                            <div class="form-group">
+                                <label class="form-label" for="p_username">Username Handle</label>
+                                <input type="text" id="p_username" class="form-input" required placeholder="e.g. elonmuskk_58392">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="p_fullName">Display Name</label>
+                                <input type="text" id="p_fullName" class="form-input" required placeholder="e.g. Elon Musk Official">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="p_bio">Profile Bio</label>
+                                <input type="text" id="p_bio" class="form-input" placeholder="e.g. CEO of SpaceX. DM for crypto giveaways!">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="p_picUrl">Profile Picture URL</label>
+                                <input type="text" id="p_picUrl" class="form-input" placeholder="URL to profile image">
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                <div class="form-group">
+                                    <label class="form-label" for="p_followers">Followers</label>
+                                    <input type="number" id="p_followers" class="form-input" required value="0">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="p_following">Following</label>
+                                    <input type="number" id="p_following" class="form-input" required value="0">
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                <div class="form-group">
+                                    <label class="form-label" for="p_posts">Total Posts</label>
+                                    <input type="number" id="p_posts" class="form-input" required value="0">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="p_age">Account Age (Days)</label>
+                                    <input type="number" id="p_age" class="form-input" required value="1">
+                                </div>
+                            </div>
+                            <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" id="p_verified" style="width: 18px; height: 18px; cursor: pointer;">
+                                <label class="form-label" for="p_verified" style="margin-bottom: 0; cursor: pointer;">Has Verification Badge</label>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="p_samplePosts">Recent Posts (one per line)</label>
+                                <textarea id="p_samplePosts" class="form-input" rows="4" placeholder="Enter post contents to scan..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                <i data-lucide="play"></i> Execute Detection Pipeline
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- RIGHT COLUMN: Interactive Pipeline Analysis & Audit Report -->
+                    <div class="card" style="min-height: 600px;">
+                        <!-- Loading Scan Animation Overlay -->
+                        <div id="scanLoader" class="scanning-overlay">
+                            <div class="spinner"></div>
+                            <p style="font-weight: 600; font-size: 15px; letter-spacing: 0.5px;">Executing Detection Pipeline...</p>
+                        </div>
+
+                        <!-- Multi-step pipeline tracker -->
+                        <div class="pipeline-steps">
+                            <div class="pipeline-progress-bar"></div>
+                            <div class="step-node active">
+                                <div class="step-circle">1</div>
+                                <span class="step-label">Data Preprocessing</span>
+                            </div>
+                            <div class="step-node">
+                                <div class="step-circle">2</div>
+                                <span class="step-label">Feature Vector</span>
+                            </div>
+                            <div class="step-node">
+                                <div class="step-circle">3</div>
+                                <span class="step-label">AI Inference</span>
+                            </div>
+                            <div class="step-node">
+                                <div class="step-circle">4</div>
+                                <span class="step-label">Audit Report</span>
+                            </div>
+                        </div>
+
+                        <!-- Step 1 View: Preprocessing -->
+                        <div id="stepPanel_1" class="pipeline-panel active">
+                            <h3 class="report-section-title">Module 3: Preprocessing Engine</h3>
+                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+                                Cleans and normalises the incoming profile data, correcting empty/null values, trimming spacing, and standardising values.
+                            </p>
+                            <div class="form-group">
+                                <label class="form-label">Preprocessed Clean JSON</label>
+                                <pre id="pre_json" class="code-view" style="max-height: 350px;">Waiting to run profile scan...</pre>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 View: Features Extraction -->
+                        <div id="stepPanel_2" class="pipeline-panel">
+                            <h3 class="report-section-title">Module 4: Feature Extraction Engine</h3>
+                            <p style="font-size: 13px; color: var(--text-muted);">
+                                Maps cleaned raw data fields into calculated heuristic feature coefficients between [0.0 (Safe) and 1.0 (Abnormal)].
+                            </p>
+                            <div id="featuresGrid" class="features-grid">
+                                <!-- Loaded dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Step 3 View: AI/ML Inference JSON -->
+                        <div id="stepPanel_3" class="pipeline-panel">
+                            <h3 class="report-section-title">Module 5: Machine Learning Classification</h3>
+                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+                                Evaluates features using classification models and computes the mathematical probability weights.
+                            </p>
+                            <div class="form-group">
+                                <label class="form-label">Classification Output Vectors</label>
+                                <pre id="det_json" class="code-view" style="max-height: 350px;">Processing classification...</pre>
+                            </div>
+                        </div>
+
+                        <!-- Step 4 View: Final Printable Report -->
+                        <div id="stepPanel_4" class="pipeline-panel">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h3 class="report-section-title" style="border-bottom: none; margin-bottom: 0;">Audit Report</h3>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.print()">
+                                    <i data-lucide="printer"></i> Print Audit
+                                </button>
+                            </div>
+                            
+                            <!-- PDF sheet preview container -->
+                            <div class="report-sheet" id="printableReportSheet">
+                                <div class="report-header">
+                                    <div>
+                                        <div class="report-title">Profile Security Audit</div>
+                                        <div class="report-meta">SentiShield Core Analytics Engine v3.2</div>
+                                    </div>
+                                    <span id="reportClassificationBadge" class="status-badge real">
+                                        <i data-lucide="shield-check"></i> Real Account
+                                    </span>
+                                </div>
+
+                                <div class="risk-container">
+                                    <div class="risk-gauge-wrap">
+                                        <svg width="140" height="140" viewBox="0 0 140 140">
+                                            <circle cx="70" cy="70" r="60" class="risk-circle-bg"></circle>
+                                            <circle cx="70" cy="70" r="60" class="risk-circle-fill" id="riskCircleFill"></circle>
+                                        </svg>
+                                        <div class="risk-percentage" id="riskTextPercent">0%</div>
+                                    </div>
+                                    <div class="risk-details-card">
+                                        <h4 id="report_fullName" style="font-size: 17px; font-weight:700;">Loading Name</h4>
+                                        <div id="report_username" style="font-family: var(--font-mono); color: var(--secondary); font-size:13px; margin: 2px 0 6px 0;">@username</div>
+                                        <p id="report_bio" style="font-size:12px; color: var(--text-muted); line-height: 1.4;">Bio description loading...</p>
+                                    </div>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; background: rgba(255,255,255,0.01); border: 1px solid var(--border-color); padding: 12px; border-radius: var(--radius-sm); text-align: center;">
+                                    <div>
+                                        <div class="form-label" style="font-size:9px; margin-bottom: 4px;">Followers</div>
+                                        <div style="font-weight: 700; font-size: 15px;" id="report_followers">0</div>
+                                    </div>
+                                    <div>
+                                        <div class="form-label" style="font-size:9px; margin-bottom: 4px;">Following</div>
+                                        <div style="font-weight: 700; font-size: 15px;" id="report_following">0</div>
+                                    </div>
+                                    <div>
+                                        <div class="form-label" style="font-size:9px; margin-bottom: 4px;">Account Age</div>
+                                        <div style="font-weight: 700; font-size: 15px;" id="report_age">0 days</div>
+                                    </div>
+                                </div>
+
+                                <h4 style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); letter-spacing:0.5px;">Triggered Flags</h4>
+                                <div class="report-flag-list" id="reportFlagsList">
+                                    <!-- Loaded Dynamically -->
+                                </div>
+
+                                <h4 style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); letter-spacing:0.5px; margin-top:20px;">Verification Badge</h4>
+                                <div class="badge-row">
+                                    <span id="report_verified_badge" class="badge-lbl blue" style="display: none;"><i data-lucide="award"></i> Verified Profile</span>
+                                </div>
+                            </div>
+
+                            <!-- MODULE 14: FEEDBACK INPUT -->
+                            <div class="card" style="margin-top: 24px; background: rgba(255,255,255,0.01);">
+                                <h4 style="font-size: 13px; font-weight:600; margin-bottom: 12px;">Is this detection correct? Submit feedback to retrain model.</h4>
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                    <select id="feedbackClassification" class="form-input" style="max-width: 200px;">
+                                        <option value="real">Label as Real Account</option>
+                                        <option value="fake">Label as Fake Account</option>
+                                    </select>
+                                    <button type="button" id="btnSubmitFeedback" class="btn btn-secondary btn-sm">
+                                        <i data-lucide="check"></i> Submit Correction
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW 3: ML ARENA (MODULE 8) ==================== -->
+            <div id="view-ml" class="view-panel view-container" style="display: none;">
+                <div class="ml-arena-grid">
+                    
+                    <!-- Left: Control Column -->
+                    <div class="card">
+                        <div class="card-title">
+                            <span><i data-lucide="cpu"></i> Model Training Center</span>
+                        </div>
+                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
+                            Train a Naive Bayes / Logistic Regression classification model on a pre-loaded local dataset of 120 verified target profiles. Watch parameters converge in real-time.
+                        </p>
+                        
+                        <button type="button" id="btnTrainModel" class="btn btn-primary" style="width: 100%; margin-bottom: 24px;">
+                            <i data-lucide="refresh-cw"></i> Train Detection Model
+                        </button>
+
+                        <h4 class="form-label">Confusion Matrix (100 Test Cases)</h4>
+                        <div class="confusion-matrix">
+                            <div class="matrix-cell title">Actual \ Pred</div>
+                            <div class="matrix-cell title" style="color: var(--success);">Pred REAL</div>
+                            <div class="matrix-cell title" style="color: var(--danger);">Pred FAKE</div>
+
+                            <div class="matrix-cell title" style="color: var(--success);">Actual REAL</div>
+                            <div class="matrix-cell tn" id="cm_tn">0</div>
+                            <div class="matrix-cell fp" id="cm_fp">0</div>
+
+                            <div class="matrix-cell title" style="color: var(--danger);">Actual FAKE</div>
+                            <div class="matrix-cell fn" id="cm_fn">0</div>
+                            <div class="matrix-cell tp" id="cm_tp">0</div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Live Loss chart and Training logs terminal -->
+                    <div style="display: flex; flex-direction: column; gap: 24px;">
+                        <div class="card" style="height: 320px;">
+                            <div class="card-title"><span><i data-lucide="trending-up"></i> Training Convergence Curve</span></div>
+                            <div class="chart-wrapper" style="height: 240px;">
+                                <canvas id="trainingCurveChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-title"><span><i data-lucide="terminal"></i> Live Optimization Logs</span></div>
+                            <div class="training-terminal" id="mlTerminal">
+                                <div>[System IDLE] Hit 'Train Detection Model' to start stochastic gradient descent...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW 4: NETWORK GRAPH (MODULE 7) ==================== -->
+            <div id="view-network" class="view-panel view-container" style="display: none;">
+                <div class="profiler-grid">
+                    
+                    <!-- Canvas Box -->
+                    <div class="card">
+                        <div class="card-title">
+                            <span><i data-lucide="git-merge"></i> Interactive Network Analysis</span>
+                        </div>
+                        <p style="font-size: 13px; color: var(--text-muted);">
+                            Inspect coordinated connection structures. Drag nodes to explore relationships. Red nodes represent detected bots, orange is suspicious, and green is verified real.
+                        </p>
+
+                        <div class="canvas-container" style="margin-top: 16px;">
+                            <canvas id="networkCanvas" width="600" height="420"></canvas>
+                            <div class="canvas-toolbar">
+                                <select id="networkPreset" class="form-input btn-sm" style="max-width: 200px; background: rgba(10,15,30,0.85);">
+                                    <option value="star_botnet">Star Follower Botnet</option>
+                                    <option value="circular_ring">Circular Syndicate Ring</option>
+                                    <option value="organic_network">Organic Real Connections</option>
+                                </select>
+                            </div>
+                            <div class="canvas-info">
+                                <strong>Legend:</strong><br>
+                                <span style="color: var(--success);">● Real User</span><br>
+                                <span style="color: var(--danger);">● Bot Profile</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Node Inspector Card -->
+                    <div class="card" id="nodeInspectorCard">
+                        <div class="card-title">
+                            <span><i data-lucide="info"></i> Node Relationship Inspector</span>
+                        </div>
+                        
+                        <div id="nodeInspectorDetails">
+                            <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 20px; border-radius: var(--radius-sm); text-align: center;">
+                                <i data-lucide="mouse-pointer" style="width: 48px; height: 48px; color: var(--text-dark); margin-bottom: 12px;"></i>
+                                <p style="font-size: 13px; color: var(--text-muted);">Click any node in the canvas layout to audit its network properties and details.</p>
+                            </div>
+                            
+                            <div id="nodeRealData" style="display: none; margin-top: 20px;">
+                                <h3 id="nodeName" style="font-size: 18px; font-weight:700;">@User</h3>
+                                <div style="margin-top: 8px;">
+                                    <span id="nodeStatusBadge" class="status-badge real">REAL</span>
+                                </div>
+                                
+                                <div style="margin-top: 20px; font-size: 13px;">
+                                    <div class="form-label" style="font-size: 10px;">Assigned Role</div>
+                                    <p id="nodeRole" style="font-weight: 600; color: white;">Normal Follower</p>
+                                </div>
+                                <div style="margin-top: 16px; font-size: 13px;">
+                                    <div class="form-label" style="font-size: 10px;">Cluster Diagnostics</div>
+                                    <p id="nodeDetails" style="color: var(--text-muted); line-height: 1.4;">Details about connection dynamics and suspicious structures.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW 5: DATABASE BROWSER (MODULE 12) ==================== -->
+            <div id="view-database" class="view-panel view-container" style="display: none;">
+                <div class="card">
+                    <div class="card-title" style="margin-bottom: 24px;">
+                        <span><i data-lucide="database"></i> System Logs & DB Records</span>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="file" id="dbImportFile" style="display: none;" accept=".json">
+                            <button type="button" id="btnImportDb" class="btn btn-secondary btn-sm"><i data-lucide="upload"></i> Restore DB</button>
+                            <button type="button" id="btnExportDb" class="btn btn-secondary btn-sm"><i data-lucide="download"></i> Backup DB</button>
+                            <button type="button" id="btnClearLogs" class="btn btn-danger btn-sm"><i data-lucide="trash-2"></i> Clear Scan Logs</button>
+                        </div>
+                    </div>
+                    
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
+                        Direct access to records stored inside simulated memory cache tables. Scanned results are saved locally in the `fad_logs` catalog.
+                    </p>
+
+                    <div class="table-responsive">
+                        <table class="db-table">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Full Name</th>
+                                    <th>Classification</th>
+                                    <th>Risk Score</th>
+                                    <th>Scan Time</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dbLogsTableBody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW 6: SECURITY PANEL (MODULE 13) ==================== -->
+            <div id="view-security" class="view-panel view-container" style="display: none;">
+                <div class="card" style="margin-bottom: 24px;">
+                    <div class="card-title">
+                        <span><i data-lucide="lock"></i> Encryption & Active Session Audit</span>
+                    </div>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
+                        Displays session token verification status and simulated cryptographic encryption parameters. Password values are stored under double SHA-256 salting.
+                    </p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                        <div style="background: rgba(255,255,255,0.01); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-sm);">
+                            <div class="form-label" style="font-size:10px;">Security Standard</div>
+                            <div style="font-weight: 700; font-size:16px; color: var(--secondary); margin-top: 4px;">TLS 1.3 / AES-256 Simulated</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.01); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-sm);">
+                            <div class="form-label" style="font-size:10px;">Authorization Hashing</div>
+                            <div style="font-weight: 700; font-size:16px; color: var(--primary); margin-top: 4px;">SHA-256 (One-Way Salted)</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.01); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-sm);">
+                            <div class="form-label" style="font-size:10px;">Database Status</div>
+                            <div style="font-weight: 700; font-size:16px; color: var(--success); margin-top: 4px;">Clean & Encrypted</div>
+                        </div>
+                    </div>
+
+                    <h4 class="form-label" style="margin-bottom: 12px;">Active Security Event Log (Audit Trail)</h4>
+                    <div class="table-responsive">
+                        <table class="db-table">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>Module Category</th>
+                                    <th>Event Description</th>
+                                    <th>Verification Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="securityLogsTableBody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== VIEW 7: ADMIN SETTINGS (MODULE 10) ==================== -->
+            <div id="view-admin" class="view-panel view-container" style="display: none;">
+                <div class="card">
+                    <div class="card-title">
+                        <span><i data-lucide="sliders"></i> Core Algorithm Configuration Settings</span>
+                    </div>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">
+                        Adjust thresholds, edit active spam keywords list, and configure classifications ratios.
+                    </p>
+
+                    <form id="adminConfigForm">
+                        <div class="form-group">
+                            <label class="form-label" for="cfg_threshold">Risk Threshold Value (1-100%)</label>
+                            <input type="number" id="cfg_threshold" class="form-input" min="10" max="95" required style="max-width: 200px;">
+                            <span style="font-size:11px; color: var(--text-muted); display:block; margin-top:4px;">Scores higher than this limit are classified as Fake/Bot accounts. Default is 65%.</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="cfg_modelType">Inference Engine Model Type</label>
+                            <select id="cfg_modelType" class="form-input" style="max-width: 250px;">
+                                <option value="naive_bayes">Naive Bayes Classifier</option>
+                                <option value="decision_tree">Decision Tree Classification</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="cfg_minAge">Minimum Required Age (Days)</label>
+                            <input type="number" id="cfg_minAge" class="form-input" min="1" max="365" required style="max-width: 200px;">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="cfg_keywords">Filtered Spam Keywords (One per line)</label>
+                            <textarea id="cfg_keywords" class="form-input" rows="8" placeholder="Keywords to match spam posts..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i data-lucide="save"></i> Save System Parameters
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/db.js"></script>
+    <script src="js/ml.js"></script>
+    <script src="js/network.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // Override function to display correct page title and run Lucide replacements
+        const originalShowView = window.app.showView;
+        window.app.showView = function(viewName) {
+            originalShowView.call(this, viewName);
+            
+            // Set Header Title
+            const titles = {
+                dashboard: 'Global Threat Dashboard',
+                profiler: 'Account Integrity Profiler',
+                ml: 'Machine Learning Arena',
+                network: 'Follower Connection & Network Graph',
+                database: 'Secure Database Browser',
+                security: 'Encryption & Session Console',
+                admin: 'System Settings Panel'
+            };
+            document.getElementById('currentViewTitle').textContent = titles[viewName] || 'Security Console';
+            
+            // Render details sidecard state for network if active
+            if (viewName === 'network') {
+                document.getElementById('nodeRealData').style.display = 'none';
+                const defaultCard = document.querySelector('#nodeInspectorDetails > div');
+                if (defaultCard) defaultCard.style.display = 'block';
+            }
+
+            // Run Lucide Replacement
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
+        };
+
+        // Initialize icons on load
+        if (window.lucide) {
+            window.lucide.createIcons();
+        }
+    </script>
+</body>
+</html>
