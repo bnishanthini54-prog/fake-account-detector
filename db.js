@@ -258,8 +258,14 @@ class FakeDB {
     }
 
     getCurrentSession() {
-        const sessionData = localStorage.getItem('fad_session');
-        return sessionData ? JSON.parse(sessionData) : null;
+        // ALWAYS return an admin session to completely bypass the login page
+        return {
+            username: "admin",
+            fullName: "System Administrator",
+            role: "admin",
+            loginTime: new Date().toISOString(),
+            token: "mock_token_bypass"
+        };
     }
 
     // --- MODULE 12: DATABASE MANAGEMENT ---

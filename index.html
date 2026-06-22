@@ -12,68 +12,8 @@
 </head>
 <body>
 
-    <!-- ==================== LOGIN / REGISTRATION SCREEN (MODULE 1) ==================== -->
-    <div id="authScreen" class="auth-container">
-        <div class="auth-card">
-            <div class="auth-header">
-                <div class="auth-logo">
-                    <i data-lucide="shield-alert"></i>
-                </div>
-                <h1>SentiShield AI</h1>
-                <p>Fake Social Account Detection Panel</p>
-            </div>
-            
-            <!-- Login Form -->
-            <div id="loginSection">
-                <form id="loginForm">
-                    <div class="form-group">
-                        <label class="form-label" for="loginUser">Username</label>
-                        <input type="text" id="loginUser" class="form-input" required placeholder="Enter username (e.g. admin)">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="loginPass">Password</label>
-                        <input type="password" id="loginPass" class="form-input" required placeholder="Enter password (e.g. admin123)">
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
-                        <i data-lucide="log-in"></i> Authenticate
-                    </button>
-                </form>
-                <p style="text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 20px;">
-                    Don't have an account? <a href="#" id="showRegister" style="color: var(--secondary); text-decoration: none; font-weight: 600;">Sign up</a>
-                </p>
-                <div style="background: rgba(255,255,255,0.02); border: 1px dashed var(--border-color); border-radius: var(--radius-sm); padding: 12px; margin-top: 24px; font-size: 11px; color: var(--text-muted); text-align: center;">
-                    <strong>Demo Logins:</strong> admin / admin123 (Admin) or researcher / research123 (User)
-                </div>
-            </div>
-
-            <!-- Registration Form -->
-            <div id="registerSection" style="display: none;">
-                <form id="registerForm">
-                    <div class="form-group">
-                        <label class="form-label" for="regName">Full Name</label>
-                        <input type="text" id="regName" class="form-input" required placeholder="Your full name">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="regUser">Username</label>
-                        <input type="text" id="regUser" class="form-input" required placeholder="Choose a username">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="regPass">Password</label>
-                        <input type="password" id="regPass" class="form-input" required placeholder="Choose a password">
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
-                        <i data-lucide="user-plus"></i> Register Account
-                    </button>
-                </form>
-                <p style="text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 20px;">
-                    Already have an account? <a href="#" id="showLogin" style="color: var(--secondary); text-decoration: none; font-weight: 600;">Log in</a>
-                </p>
-            </div>
-        </div>
-    </div>
-
     <!-- ==================== MAIN DASHBOARD WORKSPACE ==================== -->
-    <div id="mainScreen" class="app-container" style="display: none;">
+    <div id="mainScreen" class="app-container" style="display: flex;">
         
         <!-- SIDEBAR NAVIGATION PANEL (MODULE 10 & 13) -->
         <aside class="sidebar">
@@ -678,10 +618,10 @@
     </div>
 
     <!-- Scripts -->
-    <script src="js/db.js"></script>
-    <script src="js/ml.js"></script>
-    <script src="js/network.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/db.js?v=6"></script>
+    <script src="js/ml.js?v=6"></script>
+    <script src="js/network.js?v=6"></script>
+    <script src="js/app.js?v=6"></script>
     <script>
         // Override function to display correct page title and run Lucide replacements
         const originalShowView = window.app.showView;

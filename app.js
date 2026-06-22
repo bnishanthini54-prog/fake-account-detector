@@ -37,11 +37,9 @@ class Application {
         const authScreen = document.getElementById('authScreen');
         const mainScreen = document.getElementById('mainScreen');
         
-        if (!authScreen || !mainScreen) return;
-
         if (session) {
-            authScreen.style.display = 'none';
-            mainScreen.style.display = 'flex';
+            if (authScreen) authScreen.style.display = 'none';
+            if (mainScreen) mainScreen.style.display = 'flex';
             
             // Set User Details
             document.querySelectorAll('.user-name').forEach(el => el.textContent = session.fullName);
@@ -54,8 +52,8 @@ class Application {
                 el.style.display = session.role === 'admin' ? 'block' : 'none';
             });
         } else {
-            authScreen.style.display = 'flex';
-            mainScreen.style.display = 'none';
+            if (authScreen) authScreen.style.display = 'flex';
+            if (mainScreen) mainScreen.style.display = 'none';
             this.clearCharts();
         }
     }
